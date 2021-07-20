@@ -25,18 +25,15 @@ module JekyllGetBooks
           target = site.data[d['data']]
           source = d['json']
           file = d['file']
-          table = CSV.read(File.read(file), headers: true)
-          counter = 0
-          table.each do |row|
-            output = JSON.load(URI.open(source+row['isbn']))
-            site.data[d['data'[coutner.status]]] = row['status']
-            if target
-              target.deep_merge(source)
-            else
-              site.data[d['data'[coutner]]] = output
-            end   
-            counter += 1
+          results = {}
+          if !(File.file?(file))
+            warn "File does not exist / Path is incorrect".yellow
           end
+          CSV.foreach((file), headers: true, col_sep: ",") do |row|
+            output = JSON.load(URI.open(source+row['isbn']))
+            results.deep_merge(output)
+          end 
+          site.data[d['data']] = results
         rescue
           next
         end

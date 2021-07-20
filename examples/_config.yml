@@ -1,0 +1,9 @@
+# Add this to your _config.yml file
+
+plugins:
+  - jekyll-get-books
+
+jekyll_get_books:
+  - data: test #arbitrary name where the data is being saved
+    json: 'https://www.googleapis.com/books/v1/volumes?q=isbn:' #link to a book API. In this case the Google Book API which returns a JSON
+    file: '_data/books.csv' # Path to the csv files with the ISBNs
