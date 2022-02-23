@@ -30,7 +30,16 @@ module JekyllGetBooks
             warn "File does not exist / Path is incorrect".yellow
           end
           CSV.foreach((file), headers: true, col_sep: ",") do |row|
-            output = JSON.load(URI.open(source+row['isbn']))
+            begin
+              output = JSON.load(URI.open(source+row['isbn']))
+            rescue => e
+              case e
+                when OpenURI::HTTPError
+                warn "A HTTP Error occurred while accessing the API".yellow
+                when SocketError
+                warn "A Socket Error occurred while accessing the API".yellow
+              end
+            end
             results.deep_merge(output)
           end 
           site.data[d['data']] = results
