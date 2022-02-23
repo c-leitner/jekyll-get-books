@@ -31,7 +31,14 @@ module JekyllGetBooks
           end
           CSV.foreach((file), headers: true, col_sep: ",") do |row|
             begin
-              output = JSON.load(URI.open(source+row['isbn']))
+              connection = URI.open(source+row['isbn'])
+              meta = connection.status[1]
+              if meta == "OK"
+                warn "JSON fetched succesfully"
+              else
+                warn "An HTTP erro occurred while fetching the JSON (" +meta+")"
+              end
+              output = JSON.load(connection)
             rescue => e
               case e
                 when OpenURI::HTTPError
